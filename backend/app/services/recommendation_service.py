@@ -113,27 +113,39 @@ class RecommendationService:
         self.ensure_loaded()
         return list(self._book_names)
     
-    def get_book_image_url(self, book_title: str) -> Optional[str]:
+    def get_book_details(self, book_title: str) -> dict:
         """
-        Get the image URL for a book title.
-        
-        Args:
-            book_title: Title of the book
-            
-        Returns:
-            Image URL or None if not found
+        Get book details (author, year, etc.) from final_rating dataframe.
         """
         self.ensure_loaded()
+        details = {
+            "title": book_title,
+            "image_url": None,
+            "author": "Unknown",
+            "year": None,
+            "publisher": "Unknown"
+        }
         
         try:
-            idx = np.where(self._final_rating["title"] == book_title)[0]
-            if len(idx) > 0:
-                return self._final_rating.iloc[idx[0]]["image_url"]
+            # Assuming _final_rating has columns: title, author, year, publisher, image_url
+            # Filter by title
+            rows = self._final_rating[self._final_rating["title"] == book_title]
+            if not rows.empty:
+                row = rows.iloc[0]
+                details["image_url"] = row.get("image_url")
+                # Handle possible column name variations if needed, but assuming standard from previous contexts
+                details["author"] = row.get("author", "Unknown Author")
+                details["year"] = int(row.get("year")) if "year" in row and pd.notna(row["year"]) else None
+                details["publisher"] = row.get("publisher", "Unknown Publisher")
         except Exception as e:
-            logger.warning(f"Could not find image URL for '{book_title}': {e}")
-        
-        return None
-    
+            logger.warning(f"Error fetching details for '{book_title}': {e}")
+            
+        return details
+
+    def get_book_image_url(self, book_title: str) -> Optional[str]:
+        """Wrapper for get_book_details for backward compatibility or simple use."""
+        return self.get_book_details(book_title).get("image_url")
+
     def recommend(
         self,
         book_title: str,
@@ -141,18 +153,6 @@ class RecommendationService:
     ) -> List[RecommendedBook]:
         """
         Get book recommendations based on a given book title.
-        
-        Uses KNN algorithm to find books with similar user rating patterns.
-        
-        Args:
-            book_title: Title of the book to base recommendations on
-            n_recommendations: Number of recommendations to return
-            
-        Returns:
-            List of recommended books with metadata
-            
-        Raises:
-            BookNotFoundError: If the book title is not in the database
         """
         self.ensure_loaded()
         
@@ -178,12 +178,15 @@ class RecommendationService:
             distance = distances[0][i]
             
             recommended_title = self._book_pivot.index[idx]
-            image_url = self.get_book_image_url(recommended_title)
+            details = self.get_book_details(recommended_title)
             
             recommendations.append(
                 RecommendedBook(
                     title=recommended_title,
-                    image_url=image_url,
+                    image_url=details["image_url"],
+                    author=details["author"],
+                    year=details["year"],
+                    publisher=details["publisher"],
                     distance=round(float(distance), 4)
                 )
             )
@@ -194,13 +197,6 @@ class RecommendationService:
     def search_books(self, query: str, limit: int = 10) -> List[str]:
         """
         Search for books by title (case-insensitive partial match).
-        
-        Args:
-            query: Search query string
-            limit: Maximum number of results
-            
-        Returns:
-            List of matching book titles
         """
         self.ensure_loaded()
         
@@ -211,6 +207,34 @@ class RecommendationService:
         ]
         
         return matches[:limit]
+
+    def get_featured_books(self, limit: int = 20) -> List[RecommendedBook]:
+        """
+        Get a list of featured (random) books with their image URLs.
+        """
+        self.ensure_loaded()
+        
+        # Get random indices
+        total_books = len(self._book_names)
+        random_indices = np.random.choice(total_books, min(limit, total_books), replace=False)
+        
+        featured_books = []
+        for idx in random_indices:
+            title = self._book_names[idx]
+            details = self.get_book_details(title)
+            
+            featured_books.append(
+                RecommendedBook(
+                    title=title,
+                    image_url=details["image_url"],
+                    author=details["author"],
+                    year=details["year"],
+                    publisher=details["publisher"],
+                    distance=0.0
+                )
+            )
+            
+        return featured_books
 
 
 # Singleton instance for dependency injection

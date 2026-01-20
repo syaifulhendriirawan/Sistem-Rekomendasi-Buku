@@ -1,0 +1,53 @@
+.book-carousel {
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    overflow: hidden;
+}
+
+.swiper {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 200px;
+    /* height: 300px; */
+    filter: blur(2px);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.swiper-slide-active {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.swiper-pagination-bullet {
+    background: var(--text-secondary);
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--primary);
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: var(--primary);
+}
+
+/* Adjust BookCard styles when inside carousel */
+.swiper-slide .book-card {
+    height: 100%;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+    .swiper-slide {
+        width: 140px;
+    }
+}

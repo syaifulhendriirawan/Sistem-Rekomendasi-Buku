@@ -1,19 +1,23 @@
 /**
  * RecommendationPage - Main page for book recommendations
  */
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import './RecommendationPage.css';
 import useBookStore from '../../stores/useBookStore';
 import SearchDropdown from '../../components/SearchDropdown';
 import BookGrid from '../../components/BookGrid';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { APP_NAME, APP_DESCRIPTION } from '../../lib/constants';
+import BookCarousel from '../../components/BookCarousel';
+import BookDetail from '../../components/BookDetail';
+import { APP_NAME } from '../../lib/constants';
 
 function RecommendationPage() {
     const {
         searchResults,
         selectedBook,
+        selectedBookDetails,
         recommendations,
+        featuredBooks,
         isLoading,
         isSearching,
         error,
@@ -21,7 +25,12 @@ function RecommendationPage() {
         selectBook,
         clearSelection,
         clearError,
+        fetchFeaturedBooks,
     } = useBookStore();
+
+    useEffect(() => {
+        fetchFeaturedBooks();
+    }, [fetchFeaturedBooks]);
 
     const handleSearch = useCallback((query) => {
         searchBooks(query);
@@ -29,31 +38,41 @@ function RecommendationPage() {
 
     const handleSelect = useCallback((bookTitle) => {
         selectBook(bookTitle);
+        // Scroll to details is handled automatically or we can force it
+        setTimeout(() => {
+            document.getElementById('book-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
     }, [selectBook]);
 
     return (
         <div className="recommendation-page">
+            {/* Navigation / Header */}
+            {/* Navigation / Header */}
+            <nav className="navbar">
+                <div className="navbar__container">
+                    {/* Empty or minimalistic menu if needed later */}
+                </div>
+            </nav>
+
             {/* Hero Section */}
             <header className="hero">
-                <div className="hero__background">
-                    <div className="hero__gradient" />
-                    <div className="hero__pattern" />
-                </div>
-
                 <div className="hero__content">
                     <h1 className="hero__title">
-                        <span className="hero__emoji">📚</span>
-                        {APP_NAME}
+                        Find your next favorite story.
                     </h1>
-                    <p className="hero__description">{APP_DESCRIPTION}</p>
+                    <p className="hero__description">
+                        Explore our curated collection of trending titles and hidden gems selected just for you.
+                    </p>
 
-                    <SearchDropdown
-                        books={searchResults}
-                        onSearch={handleSearch}
-                        onSelect={handleSelect}
-                        isSearching={isSearching}
-                        placeholder="Type a book title to find recommendations..."
-                    />
+                    <div className="hero__search-container">
+                        <SearchDropdown
+                            books={searchResults}
+                            onSearch={handleSearch}
+                            onSelect={handleSelect}
+                            isSearching={isSearching}
+                            placeholder="Search by title..."
+                        />
+                    </div>
                 </div>
             </header>
 
@@ -63,65 +82,58 @@ function RecommendationPage() {
                 {error && (
                     <div className="error-banner">
                         <p>{error}</p>
-                        <button onClick={clearError} className="error-banner__close">
-                            ✕
-                        </button>
+                        <button onClick={clearError} className="error-banner__close">✕</button>
                     </div>
                 )}
 
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="loading-container">
-                        <LoadingSpinner size="large" text="Finding similar books..." />
+                {selectedBook ? (
+                    <div id="book-detail">
+                        {isLoading && !selectedBookDetails ? (
+                            <div className="loading-container">
+                                <LoadingSpinner size="large" text="Fetching book details..." />
+                            </div>
+                        ) : selectedBookDetails && (
+                            <section className="detail-section">
+                                <BookDetail
+                                    book={selectedBookDetails}
+                                    onClose={clearSelection}
+                                />
+
+                                {recommendations.length > 0 && (
+                                    <div className="recommendations-container">
+                                        <h3 className="section-title">You might also like</h3>
+                                        <p className="section-subtitle">Based on similarity to "{selectedBookDetails.title}"</p>
+                                        <div className="spacer"></div>
+                                        <BookGrid
+                                            books={recommendations}
+                                            showSimilarity={true}
+                                            onBookClick={handleSelect}
+                                        />
+                                    </div>
+                                )}
+                            </section>
+                        )}
                     </div>
-                )}
-
-                {/* Results */}
-                {!isLoading && selectedBook && recommendations.length > 0 && (
-                    <section className="results-section">
-                        <div className="results-header">
-                            <h2 className="results-title">
-                                Because you liked <span className="highlight">"{selectedBook}"</span>
-                            </h2>
-                            <button onClick={clearSelection} className="btn btn--ghost">
-                                Clear Selection
-                            </button>
+                ) : (
+                    /* Featured Carousel (Default View) */
+                    <section className="featured-section">
+                        <div className="section-header">
+                            <h2 className="section-title">Trending Books</h2>
+                            <p className="section-subtitle">Most popular reads this week</p>
                         </div>
 
-                        <BookGrid
-                            books={recommendations}
-                            showSimilarity={true}
-                        />
-                    </section>
-                )}
-
-                {/* Empty State */}
-                {!isLoading && !selectedBook && (
-                    <section className="empty-state">
-                        <div className="empty-state__icon">🔍</div>
-                        <h2 className="empty-state__title">Start by searching for a book</h2>
-                        <p className="empty-state__text">
-                            Our AI-powered system uses collaborative filtering to find books
-                            that readers with similar tastes enjoyed.
-                        </p>
-
-                        <div className="features">
-                            <div className="feature">
-                                <span className="feature__icon">⚡</span>
-                                <h3 className="feature__title">Fast Results</h3>
-                                <p className="feature__text">Get recommendations in under 50ms</p>
+                        {featuredBooks.length > 0 ? (
+                            <div className="featured-grid-wrapper">
+                                <BookCarousel
+                                    books={featuredBooks}
+                                    onBookClick={handleSelect}
+                                />
                             </div>
-                            <div className="feature">
-                                <span className="feature__icon">🎯</span>
-                                <h3 className="feature__title">Accurate Matching</h3>
-                                <p className="feature__text">Based on 1M+ user ratings</p>
+                        ) : (
+                            <div className="loading-container">
+                                <LoadingSpinner text="Loading library..." />
                             </div>
-                            <div className="feature">
-                                <span className="feature__icon">🤖</span>
-                                <h3 className="feature__title">Smart Algorithm</h3>
-                                <p className="feature__text">KNN with cosine similarity</p>
-                            </div>
-                        </div>
+                        )}
                     </section>
                 )}
             </main>
@@ -129,10 +141,10 @@ function RecommendationPage() {
             {/* Footer */}
             <footer className="footer">
                 <p>
-                    Built with <span className="heart">❤</span> using React + FastAPI
+                    Built with <span className="heart">❤</span> for book lovers
                 </p>
                 <p className="footer__tech">
-                    Collaborative Filtering • K-Nearest Neighbors • 270K+ Books
+                    Boo RecommenderAI • 270K+ Books
                 </p>
             </footer>
         </div>

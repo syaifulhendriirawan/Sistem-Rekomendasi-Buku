@@ -1,7 +1,6 @@
 .search-dropdown {
     position: relative;
     width: 100%;
-    max-width: 600px;
 }
 
 .search-dropdown__input-wrapper {
@@ -12,40 +11,41 @@
 
 .search-dropdown__icon {
     position: absolute;
-    left: 16px;
+    left: 20px;
     width: 20px;
     height: 20px;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     pointer-events: none;
 }
 
 .search-dropdown__input {
     width: 100%;
-    padding: 16px 48px;
-    font-size: 1rem;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 16px;
+    padding: 1.25rem 3.5rem;
+    font-size: 1.1rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
     color: var(--text-primary);
     transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .search-dropdown__input::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 .search-dropdown__input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 .search-dropdown__spinner {
     position: absolute;
-    right: 16px;
+    right: 20px;
     width: 20px;
     height: 20px;
-    border: 2px solid rgba(139, 92, 246, 0.2);
+    border: 2px solid rgba(37, 99, 235, 0.2);
     border-top-color: var(--primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -58,10 +58,10 @@
     right: 0;
     max-height: 320px;
     overflow-y: auto;
-    background: var(--card-bg);
+    background: white;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     z-index: 100;
     list-style: none;
     padding: 8px;
@@ -69,8 +69,8 @@
 }
 
 .search-dropdown__item {
-    padding: 12px 16px;
-    border-radius: 8px;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     color: var(--text-primary);
     transition: all 0.15s ease;
@@ -78,8 +78,8 @@
 
 .search-dropdown__item:hover,
 .search-dropdown__item--highlighted {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-    color: white;
+    background: var(--bg-primary);
+    color: var(--primary);
 }
 
 .search-dropdown__empty {
@@ -88,12 +88,12 @@
     left: 0;
     right: 0;
     padding: 20px;
-    background: var(--card-bg);
+    background: white;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     color: var(--text-secondary);
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-lg);
 }
 
 @keyframes spin {

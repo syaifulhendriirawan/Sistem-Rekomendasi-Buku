@@ -17,6 +17,7 @@ function BookGrid({ books, onBookClick, selectedBook, showSimilarity = false }) 
                     key={`${book.title}-${index}`}
                     title={book.title}
                     imageUrl={book.image_url}
+                    author={book.author}
                     distance={showSimilarity ? book.distance : undefined}
                     isSelected={selectedBook === book.title}
                     onClick={onBookClick ? () => onBookClick(book.title) : undefined}

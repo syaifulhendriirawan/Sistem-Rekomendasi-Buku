@@ -5,7 +5,7 @@
 import './BookCard.css';
 import { PLACEHOLDER_IMAGE } from '../../lib/constants';
 
-function BookCard({ title, imageUrl, distance, onClick, isSelected = false }) {
+function BookCard({ title, imageUrl, author, distance, onClick, isSelected = false }) {
     const handleImageError = (e) => {
         e.target.src = PLACEHOLDER_IMAGE;
     };
@@ -32,6 +32,7 @@ function BookCard({ title, imageUrl, distance, onClick, isSelected = false }) {
                 <h3 className="book-card__title" title={title}>
                     {title}
                 </h3>
+                {author && <p className="book-card__author">{author}</p>}
             </div>
         </article>
     );

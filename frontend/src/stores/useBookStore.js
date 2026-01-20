@@ -7,7 +7,9 @@ import api from '../lib/api';
 const useBookStore = create((set, get) => ({
     // State
     books: [],
+    featuredBooks: [],
     selectedBook: null,
+    selectedBookDetails: null, // New state
     recommendations: [],
     searchResults: [],
     isLoading: false,
@@ -15,6 +17,18 @@ const useBookStore = create((set, get) => ({
     error: null,
 
     // Actions
+
+    /**
+     * Fetch featured books
+     */
+    fetchFeaturedBooks: async () => {
+        try {
+            const books = await api.getFeaturedBooks();
+            set({ featuredBooks: books });
+        } catch (error) {
+            console.error('Failed to fetch featured books:', error);
+        }
+    },
 
     /**
      * Fetch all available books
@@ -48,28 +62,27 @@ const useBookStore = create((set, get) => ({
     },
 
     /**
-     * Select a book and get recommendations
+     * Select a book and get recommendations + details
      */
     selectBook: async (bookTitle) => {
-        set({
-            selectedBook: bookTitle,
-            isLoading: true,
-            error: null,
-            recommendations: [],
-            searchResults: []
-        });
-
+        set({ selectedBook: bookTitle, isLoading: true, error: null });
         try {
-            const response = await api.getRecommendations(bookTitle, 5);
+            const [recResponse, details] = await Promise.all([
+                api.getRecommendations(bookTitle, 5),
+                api.getBookDetails(bookTitle)
+            ]);
+
             set({
-                recommendations: response.recommendations,
+                recommendations: recResponse.recommendations,
+                selectedBookDetails: details,
                 isLoading: false
             });
         } catch (error) {
             set({
                 error: error.message,
                 isLoading: false,
-                recommendations: []
+                recommendations: [],
+                selectedBookDetails: null
             });
         }
     },

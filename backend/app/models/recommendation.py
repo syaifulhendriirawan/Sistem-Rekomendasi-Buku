@@ -30,6 +30,9 @@ class RecommendedBook(BaseModel):
     """Model for a recommended book with similarity score."""
     
     title: str = Field(..., description="Recommended book title")
+    author: Optional[str] = Field(None, description="Book author")
+    year: Optional[int] = Field(None, description="Publication year")
+    publisher: Optional[str] = Field(None, description="Publisher")
     image_url: Optional[str] = Field(None, description="URL to book cover image")
     distance: Optional[float] = Field(None, description="Distance score (lower is more similar)")
     
