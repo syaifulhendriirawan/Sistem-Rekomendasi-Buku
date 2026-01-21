@@ -11,7 +11,7 @@ A modern, full-stack book recommendation platform powered by **collaborative fil
 
 ## 📺 Demo
 
-> **[Watch Demo Video](# "Add your demo video link here")**  
+> **[Watch Demo Video](frontend/src/assets/demo%20web.mp4)**  
 > *🎥 Coming soon - Full walkthrough showing search, recommendations, and user flow*
 
 **What the demo covers:**
@@ -142,11 +142,11 @@ Frontend runs at: **<http://localhost:5173>**
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                     Frontend (React)                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
-│  │ React UI │  │ Zustand  │  │  React   │               │
-│  │Components│  │  Store   │  │  Router  │               │
-│  └────┬─────┘  └────┬─────┘  └──────────┘               │
+│                     Frontend (React)                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                │
+│  │ React UI │  │ Zustand  │  │  React   │                │
+│  │Components│  │  Store   │  │  Router  │                │
+│  └────┬─────┘  └────┬─────┘  └──────────┘                │
 │       └─────────────┼─────────────────────┐              │
 │                     ▼                     │              │
 │              ┌──────────────┐             │              │
@@ -158,21 +158,21 @@ Frontend runs at: **<http://localhost:5173>**
                       │                     │
 ┌─────────────────────┼─────────────────────┼──────────────┐
 │                     ▼                     ▼              │
-│              ┌──────────────┐      ┌──────────┐         │
-│              │   FastAPI    │      │ Static   │         │
-│              │   Routes     │      │ Files    │         │
-│              └──────┬───────┘      └──────────┘         │
+│              ┌──────────────┐      ┌──────────┐          │
+│              │   FastAPI    │      │ Static   │          │
+│              │   Routes     │      │ Files    │          │
+│              └──────┬───────┘      └──────────┘          │
 │                     ▼                                    │
 │              ┌──────────────┐                            │
 │              │   Service    │                            │
 │              │    Layer     │                            │
 │              └──────┬───────┘                            │
 │                     ▼                                    │
-│         ┌──────────────────────────┐                    │
-│         │      ML Pipeline          │                    │
-│         │  Ingest → Validate →     │                    │
-│         │  Transform → Train        │                    │
-│         └──────────────────────────┘                    │
+│         ┌──────────────────────────┐                     │
+│         │      ML Pipeline         │                     │
+│         │  Ingest → Validate →     │                     │
+│         │  Transform → Train       │                     │
+│         └──────────────────────────┘                     │
 │                                                          │
 │                  Backend (FastAPI)                       │
 └──────────────────────────────────────────────────────────┘
