@@ -11,7 +11,7 @@ A modern, full-stack book recommendation platform powered by **collaborative fil
 
 ## 📺 Demo
 
-> **[Watch Demo Video](https://youtu.be/O9EpLvHQ4cI)** 
+[![Invoice Parser Demo](frontend/src/assets/image.png)](https://youtu.be/O9EpLvHQ4cI)
 
 **What the demo covers:**
 
