@@ -11,8 +11,7 @@ A modern, full-stack book recommendation platform powered by **collaborative fil
 
 ## 📺 Demo
 
-> **[Watch Demo Video](frontend/src/assets/demo%20web.mp4)**  
-> *🎥 Coming soon - Full walkthrough showing search, recommendations, and user flow*
+> **[Watch Demo Video](https://youtu.be/O9EpLvHQ4cI)** 
 
 **What the demo covers:**
 
